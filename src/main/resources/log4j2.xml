@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+	<Properties>
+		<!-- One folder per run, named by RunLookup with the time the run started. Outside target/ so
+			 mvn clean keeps past runs. ReportListener finds the folder through the RunLog appender,
+			 so this is the only place the path is set. -->
+		<Property name="runDir">logs/${run:started}</Property>
+		<Property name="filePattern">%d{HH:mm:ss.SSS} %-5level %notEmpty{[%X{test}] }%c{1} - %msg%n%throwable</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %notEmpty{[%X{test}] }%msg%n" />
+		</Console>
+
+		<!-- Every line from the run, tagged by test so parallel output can be untangled -->
+		<File name="RunLog" fileName="${runDir}/dynamic-ui-reliability.log">
+			<PatternLayout pattern="${filePattern}" />
+		</File>
+
+		<Null name="Discard" />
+
+		<!-- One file per test, keyed by the "test" value BaseTest puts in the thread context -->
+		<Routing name="PerTestLog">
+			<Routes pattern="$${ctx:test}">
+				<!-- Lines logged outside a test, such as suite start, have no key and stay in the run log only -->
+				<Route key="$${ctx:test}" ref="Discard" />
+				<Route>
+					<File name="test-${ctx:test}" fileName="${runDir}/${ctx:test}.log">
+						<PatternLayout pattern="${filePattern}" />
+					</File>
+				</Route>
+			</Routes>
+		</Routing>
+	</Appenders>
+
+	<Loggers>
+		<!-- The suite's own debug lines always reach the files; the console shows -Dlog.level and above -->
+		<Logger name="com.dynamicui.reliability" level="debug" />
+
+		<Logger name="org.openqa.selenium" level="warn" />
+
+		<!-- The suite does not use CDP, so a Chrome/CDP version mismatch has no effect on results -->
+		<Logger name="org.openqa.selenium.devtools.CdpVersionFinder" level="error" />
+
+		<Root level="warn">
+			<AppenderRef ref="Console" level="${sys:log.level:-info}" />
+			<AppenderRef ref="RunLog" />
+			<AppenderRef ref="PerTestLog" />
+		</Root>
+	</Loggers>
+</Configuration>
