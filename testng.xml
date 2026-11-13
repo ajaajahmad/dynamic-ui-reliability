@@ -9,6 +9,7 @@
 			<class name="com.dynamicui.reliability.tests.FormValidationTest" />
 			<class name="com.dynamicui.reliability.tests.DynamicTableTest" />
 			<class name="com.dynamicui.reliability.tests.AddRemoveElementsTest" />
+			<class name="com.dynamicui.reliability.tests.UploadTest" />
 		</classes>
 	</test>
 </suite>
