@@ -1,0 +1,25 @@
+# Maven
+target/
+
+# Log4j2 run logs
+logs/
+
+# TestNG
+test-output/
+
+# Eclipse
+.project
+.classpath
+.settings/
+.factorypath
+bin/
+
+# IntelliJ IDEA
+*.iml
+.idea/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
