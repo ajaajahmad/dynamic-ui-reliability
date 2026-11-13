@@ -5,6 +5,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +22,7 @@ public class DynamicTablePage {
 	private static final Logger LOG = LogManager.getLogger(DynamicTablePage.class);
 
 	private static final String NAME_COLUMN = "Name";
-	private static final String CHROME_CPU_PREFIX = "Chrome CPU:";
+	private static final Pattern CHROME_CPU_LABEL = Pattern.compile("Chrome CPU:\\s*(\\d+(?:\\.\\d+)?%)");
 
 	private final By headerCells = By.cssSelector("table thead th");
 	private final By bodyRows = By.cssSelector("table tbody tr");
@@ -69,9 +71,14 @@ public class DynamicTablePage {
 		throw new IllegalStateException("No row named '" + name + "' in the table");
 	}
 
+	// Extracts only the percentage, because ad scripts can inject link text into the label.
 	public String chromeCpuSummary() {
 		String text = driver.findElement(chromeCpuSummary).getText();
 		LOG.debug("Summary label: {}", text);
-		return text.replace(CHROME_CPU_PREFIX, "").trim();
+		Matcher matcher = CHROME_CPU_LABEL.matcher(text);
+		if (!matcher.find()) {
+			throw new IllegalStateException("Summary label has no CPU percentage: '" + text + "'");
+		}
+		return matcher.group(1);
 	}
 }
