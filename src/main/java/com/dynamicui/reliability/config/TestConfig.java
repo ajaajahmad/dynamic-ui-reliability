@@ -21,12 +21,17 @@ public final class TestConfig {
 		return Boolean.parseBoolean(value("headless"));
 	}
 
+	public static boolean blockAds() {
+		return Boolean.parseBoolean(value("block.ads"));
+	}
+
 	public static Duration waitTimeout() {
 		return Duration.ofSeconds(Long.parseLong(value("wait.seconds")));
 	}
 
 	public static String summary() {
-		return "base.url=%s, headless=%s, wait=%ss".formatted(baseUrl(), headless(), waitTimeout().toSeconds());
+		return "base.url=%s, headless=%s, block.ads=%s, wait=%ss".formatted(baseUrl(), headless(), blockAds(),
+				waitTimeout().toSeconds());
 	}
 
 	private static String value(String key) {

@@ -49,6 +49,13 @@ public final class DriverManager {
 		if (TestConfig.headless()) {
 			options.addArguments("--headless=new");
 		}
+		// The site's Google anchor ad covers the bottom of the viewport, where it intercepts clicks on
+		// the form and upload buttons whenever an ad is served. Failing the ad hosts' DNS lookups keeps
+		// ads off the page without changing the site's own code.
+		if (TestConfig.blockAds()) {
+			options.addArguments("--host-resolver-rules=MAP *.googlesyndication.com ~NOTFOUND, "
+					+ "MAP *.doubleclick.net ~NOTFOUND, MAP *.adtrafficquality.google ~NOTFOUND");
+		}
 		return options;
 	}
 }
