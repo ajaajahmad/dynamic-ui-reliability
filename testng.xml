@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Dynamic UI Reliability" parallel="methods" thread-count="4">
+	<listeners>
+		<listener class-name="com.dynamicui.reliability.listeners.ReportListener" />
+	</listeners>
+	<test name="Chrome">
+		<classes>
+			<class name="com.dynamicui.reliability.tests.FormValidationTest" />
+		</classes>
+	</test>
+</suite>
